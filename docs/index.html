@@ -74,6 +74,13 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
 @media(max-width:860px){.toplinks a span{display:none}.toplinks a{padding:10px}.topbar-inner{height:66px}.brand-main{font-size:16px}.language-mark{display:none}}
 @media(max-width:680px){.container{padding-left:16px;padding-right:16px}.brand-icon{width:34px;height:34px}.brand-main{font-size:16px}.hero{padding:10px 0 17px}.hero h1{font-size:26px}.hero h1 span{display:block;margin:2px 0 0;font-size:.56em}.hero p{font-size:13px}.site-tabs a{padding:10px 11px;font-size:11px;gap:5px}.site-tabs .icon{width:15px;height:15px}.stats{grid-template-columns:repeat(2,1fr)}.stat{padding:12px}.stat strong{font-size:19px}.stat.safe strong{font-size:12px}.main{padding-top:21px}.panel{padding:18px}.toplinks a{padding:6px}.toplinks .icon{width:17px;height:17px}.breadcrumbs{height:39px}.section-title{flex-wrap:wrap}.result-cols,.handoff-layout{grid-template-columns:1fr}.handoff-layout{gap:20px}.footer-links{gap:10px}}
 
+
+.language-toggle{display:inline-flex;align-items:center;gap:3px;border:1px solid #bbc9d9;background:#f2f6fb;border-radius:9px;padding:3px;white-space:nowrap}
+.lang-button{border:0;background:transparent;color:#43586e;font-size:12px;font-weight:750;padding:7px 10px;border-radius:6px;min-height:32px}
+.lang-button[aria-pressed="true"]{background:#1d5387;color:white;box-shadow:0 1px 3px #10243a33}
+.lang-button:hover:not([aria-pressed="true"]){background:#e0eaf4}
+@media(max-width:680px){.language-toggle{margin-left:auto}.lang-button{padding:6px 7px;font-size:11px}.toplinks a.active span{display:none}.toplinks{gap:10px}.brand-main{font-size:16px}}
+.bilingual-field{margin:6px 0!important;white-space:pre-wrap;overflow-wrap:anywhere}.bilingual-field b,.bilingual-field strong{display:inline-block;color:#225c75;margin-right:5px}.var-details{max-height:230px;overflow:auto;margin-top:9px}.var-entry{padding:6px 0;border-bottom:1px solid #edf2f5}.var-entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:4px 0!important}.entry .detail{line-height:1.6}
 </style>
 </head>
 <body>
@@ -86,12 +93,15 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
   <a href="https://tpdb.tokyo/mouse"><svg class="icon" aria-hidden="true"><use href="#icon-mouse"/></svg><span>マウス</span></a>
   <a href="#explore" class="active" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#icon-sparkles"/></svg><span>研究アシスタント</span></a>
  </nav>
- <span class="language-mark" aria-label="English language interface">EN</span>
+ <div class="language-toggle" role="group" aria-label="Display language / 表示言語">
+    <button type="button" id="lang-en" class="lang-button" lang="en" aria-pressed="true" aria-label="Switch to English">English</button>
+    <button type="button" id="lang-ja" class="lang-button" lang="ja" aria-pressed="false" aria-label="日本語に切り替える">日本語</button>
+  </div>
  </div></header>
  <div class="container"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="https://tpdb.tokyo/">ホーム</a><svg class="icon" aria-hidden="true"><use href="#icon-chevron"/></svg><span aria-current="page">研究アシスタント</span></nav></div>
 <section class="hero"><div class="container hero-inner"><div class="hero-main">
  <div class="eyebrow"><svg class="icon" aria-hidden="true"><use href="#icon-sparkles"/></svg> TPDB RESEARCH ASSISTANT</div>
- <h1>研究アシスタント <span>Research Assistant</span></h1>
+ <h1 id="hero-title">Research Assistant <span>TPDB</span></h1>
  <p>Explore TPDB human measurements and mouse MRI experimental groups. Develop research directions with your preferred AI service, using documented metadata and—when selected—verified scientific literature.</p>
  </div></div></section>
  <div class="container"><nav class="site-tabs" aria-label="TPDB database sections"><a href="https://tpdb.tokyo/terms"><svg class="icon" aria-hidden="true"><use href="#icon-users"/></svg> 人間・Human</a><a href="https://tpdb.tokyo/mouse"><svg class="icon" aria-hidden="true"><use href="#icon-mouse"/></svg> マウス・Mouse</a><a href="#explore" class="selected" aria-current="page"><svg class="icon" aria-hidden="true"><use href="#icon-sparkles"/></svg> AI Research Assistant</a></nav></div>
@@ -102,7 +112,7 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
    <div class="panel-head"><span class="stepnum"><svg class="icon" aria-hidden="true"><use href="#icon-search"/></svg></span><div><h2 id="question-heading">Start with a research question</h2><p class="secondary">Describe a human phenotype, a mouse model, or a possible cross-species mechanism.</p></div></div>
    <label class="lab" for="question">Your research question</label>
    <textarea id="question" maxlength="4000" spellcheck="true" placeholder="e.g., Can schizophrenia-related subcortical volume differences guide studies of Setd1a mouse anatomy?">Can schizophrenia-related subcortical volume differences guide an investigation of Setd1a and Xpo7 mouse brain anatomy?</textarea>
-   <div class="label-mini">Try a research direction</div>
+   <div class="label-mini">Try a research direction</div><p id="japanese-search-note" class="secondary" hidden style="margin:0 0 10px;font-size:12px">※ データベース内の簡易検索は従来どおり英語キーワードに対応しています。日本語の質問もAI用プロンプトにそのまま含まれます。必要に応じて英語の用語も併記してください。</p>
    <div class="examples" role="group" aria-label="Example research questions">
     <button class="chip active" data-example="schiz" type="button">Schizophrenia &amp; rare variants</button>
     <button class="chip" data-example="depression" type="button">Depression &amp; antidepressants</button>
@@ -147,15 +157,112 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
 
 <script>
 (()=>{'use strict';
- const DB={human:[],mouse:[],context:'',version:''};
+ const DB={human:[],mouse:[],context:'',version:'',catalog_language:''};
+ let catalogRequest=0;
  let catalogReady=false;
- // Deploy index.html and tpdb_bundle.json side by side, or configure an HTTPS JSON URL here.
- const CATALOG_URL='./tpdb_bundle.json';
+ let demoSnapshotLoaded=false;
+ // Language-specific public metadata. Only the selected language's JSON is fetched.
+ const CATALOG_URLS={en:'./tpdb_bundle.en.json',ja:'./tpdb_bundle.ja.json'};
  const CATALOG_MAX_AGE_HOURS=72; // Fail closed if last publish is older than this; tune for production.
 
  const $=id=>document.getElementById(id);
  const byId=(arr,id)=>arr.find(x=>x.id===id);
- const examples={
+ const UI = {
+    // Texts are display-only. The original catalog and search rules remain unchanged.
+    'ホーム': ['Home','ホーム'], '用語集': ['Glossary','用語集'], 'マウス':['Mouse','マウス'],
+    '研究アシスタント':['Research Assistant','研究アシスタント'],
+    '人間・Human':['Human','人間'], 'マウス・Mouse':['Mouse','マウス'],
+    'AI Research Assistant':['AI Research Assistant','AI研究アシスタント'],
+    'Research Assistant':['Research Assistant','研究アシスタント'],
+    'Explore TPDB human measurements and mouse MRI experimental groups. Develop research directions with your preferred AI service, using documented metadata and—when selected—verified scientific literature.':
+      ['Explore TPDB human measurements and mouse MRI experimental groups. Develop research directions with your preferred AI service, using documented metadata and—when selected—verified scientific literature.', 'TPDBのヒト測定項目とマウスMRI実験群を確認し、使い慣れたAIサービスで研究の方向性を検討できます。必要に応じて、検証可能な科学文献も活用します。'],
+    'Human measurement categories':['Human measurement categories','ヒト測定項目のカテゴリー'],
+    'Mouse experimental groups':['Mouse experimental groups','マウスの実験群'],
+    'Mouse project families':['Mouse project families','マウス研究プロジェクト'],
+    'Zero AI API fees':['Zero AI API fees','TPDB側のAI API利用料なし'],
+    'Metadata matching runs in your browser':['Metadata matching runs in your browser','メタデータ検索はブラウザー内で実行'],
+    'Start with a research question':['Start with a research question','研究の疑問から始める'],
+    'Describe a human phenotype, a mouse model, or a possible cross-species mechanism.':['Describe a human phenotype, a mouse model, or a possible cross-species mechanism.','ヒトの表現型、マウスモデル、または種間に共通する可能性のある機序を入力してください。'],
+    'Your research question':['Your research question','研究したい質問'],
+    'Try a research direction':['Try a research direction','質問例を選ぶ'],
+    'Schizophrenia & rare variants':['Schizophrenia & rare variants','統合失調症と希少変異'],
+    'Depression & antidepressants':['Depression & antidepressants','うつ病と抗うつ薬'],
+    'ECT & hippocampus':['ECT & hippocampus','ECTと海馬'],
+    'Auditory EEG & MRI':['Auditory EEG & MRI','聴覚EEGとMRI'],
+    'Antipsychotics & basal ganglia':['Antipsychotics & basal ganglia','抗精神病薬と大脳基底核'],
+    'AI research approach':['AI research approach','AIによる研究の進め方'],
+    'Literature-informed (recommended)':['Literature-informed (recommended)','文献も参考にする（推奨）'],
+    'Use relevant verified scientific publications where the AI service has web access. No forced cross-species connections.':['Use relevant verified scientific publications where the AI service has web access. No forced cross-species connections.','AIサービスにウェブ検索機能がある場合、確認できる学術文献も参考にします。ヒトとマウスの関連付けは無理に行いません。'],
+    'TPDB catalog only':['TPDB catalog only','TPDBのカタログのみ'],
+    'Use only TPDB metadata, without making external scientific claims.':['Use only TPDB metadata, without making external scientific claims.','外部の研究結果を根拠にせず、TPDBのメタデータだけを使います。'],
+    'Refresh catalog':['Refresh catalog','カタログを再読み込み'],
+    'Explore relevant metadata':['Explore relevant metadata','関連するメタデータを探す'],
+    'Local preview · no AI call':['Local preview · no AI call','ブラウザー内の検索・AIへの送信なし'],
+    'What this assistant knows':['What this assistant knows','このアシスタントが参照する情報'],
+    'A searchable map of study metadata, not raw study results.':['A searchable map of study metadata, not raw study results.','研究メタデータを検索します。研究結果や個票データは含みません。'],
+    'Human measurements':['Human measurements','ヒトの測定項目'],
+    'Clinical scales, structural MRI variables, EEG and genetic/epigenetic categories.':['Clinical scales, structural MRI variables, EEG and genetic/epigenetic categories.','臨床評価尺度、構造MRI、EEG、遺伝・エピジェネティクス関連項目。'],
+    'Mouse experimental models':['Mouse experimental models','マウス実験モデル'],
+    'Group design, interventions, sex, reported sample sizes and ex vivo MRI acquisition metadata.':['Group design, interventions, sex, reported sample sizes and ex vivo MRI acquisition metadata.','実験群、介入、性別、報告されたサンプル数、ex vivo MRIの撮像情報。'],
+    'Important scientific boundary':['Important scientific boundary','科学的な利用上の注意'],
+    'TPDB does not provide mouse regional scalar values. Processed mouse MRI images exist outside the database. Candidate human–mouse connections require scientific review and potentially additional image analysis.':['TPDB does not provide mouse regional scalar values. Processed mouse MRI images exist outside the database. Candidate human–mouse connections require scientific review and potentially additional image analysis.','TPDBではマウスの脳領域別の数値データを提供していません。処理済みMRI画像はTPDBの外部に存在します。ヒトとマウスの対応関係は科学的な検証が必要で、追加の画像解析を要する場合があります。'],
+    'Privacy by design.':['Privacy by design.','プライバシーへの配慮。'],
+    'Questions stay in your browser during this preview. Nothing is sent to TPDB or an AI provider until you choose to paste it into your own AI account.':['Questions stay in your browser during this preview. Nothing is sent to TPDB or an AI provider until you choose to paste it into your own AI account.','このプレビューでは質問はブラウザー内に保持されます。ご自身のAIアカウントにプロンプトを貼り付けるまで、TPDBやAIサービスへ質問は送信されません。'],
+    'Explore the catalog':['Explore the catalog','カタログを調べる'],
+    'Browse TPDB human terms ↗':['Browse TPDB human terms ↗','TPDBのヒト用語集を見る ↗'],
+    'Research pathway · preliminary':['Research pathway · preliminary','研究の方向性・予備的な提案'],
+    'Dictionary categories and documented variable names':['Dictionary categories and documented variable names','辞書に記載されたカテゴリーと変数名'],
+    'Documented groups · not scalar MRI outcomes':['Documented groups · not scalar MRI outcomes','記載された実験群（MRI数値結果ではありません）'],
+    'Before treating this as a scientific comparison':['Before treating this as a scientific comparison','科学的な比較として扱う前に'],
+    'Continue in your preferred AI service':['Continue in your preferred AI service','お使いのAIサービスで続きを検討する'],
+    'The entire latest loaded catalog goes into the prompt; local search results do not restrict what the AI can consider.':['The entire latest loaded catalog goes into the prompt; local search results do not restrict what the AI can consider.','読み込んだカタログ全体をAI用プロンプトに含めます。簡易検索結果だけに内容を限定しません。'],
+    'Prepare a full research prompt':['Prepare a full research prompt','研究用プロンプトを作成する'],
+    'Includes your question, the latest successfully loaded TPDB catalog, source IDs, research rules and limitations. No AI API key or new TPDB subscription.':['Includes your question, the latest successfully loaded TPDB catalog, source IDs, research rules and limitations. No AI API key or new TPDB subscription.','質問、読み込み済みの最新カタログ、出典ID、科学的な注意事項をまとめます。TPDB用のAI APIキーや新たな契約は不要です。'],
+    'Copy full context + question':['Copy full context + question','カタログと質問をコピー'],
+    'Download prompt .md':['Download prompt .md','プロンプトを .md で保存'],
+    'Copy manually from here:':['Copy manually from here:','ここから手動でコピー：'],
+    'Preview the generated prompt':['Preview the generated prompt','生成したプロンプトを確認'],
+    'Use the AI service you already have':['Use the AI service you already have','普段お使いのAIサービスを利用できます'],
+    'Copy the prepared context and question.':['Copy the prepared context and question.','準備したカタログと質問をコピーします。'],
+    'Open your AI service.':['Open your AI service.','AIサービスを開きます。'],
+    'Paste the prompt and send it.':['Paste the prompt and send it.','プロンプトを貼り付けて送信します。'],
+    "Opening a provider doesn't automatically paste the prompt. Provider limits and your account's usage terms apply. No AI-generated reply is produced on this TPDB page.":["Opening a provider doesn't automatically paste the prompt. Provider limits and your account's usage terms apply. No AI-generated reply is produced on this TPDB page.",'AIサービスを開いてもプロンプトは自動貼り付けされません。各サービスの利用規約・使用上限が適用されます。TPDBのページ内ではAIの回答は生成しません。'],
+    'Research Assistant demo':['Research Assistant demo','研究アシスタント（デモ）'],
+    'お問い合わせ':['Contact','お問い合わせ'],
+    'Showing metadata related to your research question.':['Showing metadata related to your research question.','質問に関連するメタデータを表示します。']
+ };
+ let currentLang='en';
+ const t=(en,ja)=>currentLang==='ja'?(ja??UI[en]?.[1]??en):(UI[en]?.[0]??en);
+ const staticNodes=[];
+ function initializeTranslations(){
+   const skip='SCRIPT,STYLE,SVG,TEXTAREA,OPTION';
+   const walk=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+   for(let node;node=walk.nextNode();){
+     if(node.parentElement?.closest(skip+',.hero h1,.brand,#result-summary,#catalog-message,#route-title,#route-intro,#caution-text,#human-list,#mouse-list,#human-more,#mouse-more,#human-count,#mouse-count,#copy-status,#stat-human,#stat-mouse,#stat-projects'))continue;
+     const key=node.nodeValue.trim();
+     if(Object.prototype.hasOwnProperty.call(UI,key))staticNodes.push({node,original:node.nodeValue,key});
+   }
+ }
+ function translateStatic(){for(const {node,original,key} of staticNodes){node.nodeValue=original.replace(key,t(key));}
+   document.documentElement.lang=currentLang;
+   document.title=currentLang==='ja'?'脳研究データベース | TPDB 研究アシスタント':'TPDB Research Assistant | Translational Psychiatric Database';
+   document.querySelector('.brand-main').textContent=currentLang==='ja'?'脳研究データベース':'TPDB Research Database';
+   document.querySelector('.brand-sub').textContent=currentLang==='ja'?'脳研究者のための検査データ共有プラットフォーム':'Translational Psychiatric Database';
+   $('hero-title').innerHTML=currentLang==='ja'?'研究アシスタント <span>Research Assistant</span>':'Research Assistant <span>TPDB</span>';
+   $('lang-en').setAttribute('aria-pressed',String(currentLang==='en'));
+   $('lang-ja').setAttribute('aria-pressed',String(currentLang==='ja'));
+   $('japanese-search-note').hidden=currentLang!=='ja';
+   $('question').placeholder=currentLang==='ja'?'例：統合失調症の皮質下脳体積とSetd1aマウスの脳形態は関連しますか？ (schizophrenia)':'e.g., Can schizophrenia-related subcortical volume differences guide studies of Setd1a mouse anatomy?';
+   $('preview-text').setAttribute('aria-label',currentLang==='ja'?'AIに渡すプロンプト':'Generated AI prompt');
+ }
+ const examplesJa={
+   schiz:'統合失調症の皮質下脳体積の特徴は、Setd1aおよびXpo7マウスの脳形態を調べる研究の手がかりになりますか？（schizophrenia）',
+   depression:'うつ症状とMRI形態の関係から、コルチコステロン、ECT、SSRIのマウス群を用いた仮説を検討できますか？（depression）',
+   ect:'ヒトの海馬MRI測定項目は、マウスのECT後の変化と持続性を調べる研究の参考になりますか？（ECT・hippocampus）',
+   eeg:'ヒトのMMNや40Hz ASSRの知見から、マウス構造MRIを用いた聴覚回路の間接的な研究を検討できますか？（EEG・auditory）',
+   antipsychotic:'ヒトの大脳基底核測定から、haloperidolやVGAT過剰発現マウス群を用いる仮説を検討できますか？（antipsychotic）'
+ };
+  const examples={
   schiz:'Can schizophrenia-related subcortical volume differences guide an investigation of Setd1a and Xpo7 mouse brain anatomy?',
   depression:'Could human depression severity and MRI morphology inform hypotheses using corticosterone, ECT and SSRI mouse groups?',
   ect:'Can human hippocampal MRI measures motivate a study of ECT effects and their persistence in mouse MRI datasets?',
@@ -185,7 +292,16 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
    caution:'M022/M023 are a documented treatment/vehicle pair, but no human antipsychotic exposure variables are documented. M024 has no catalogued AAV control and its injected hemisphere requires confirmation.'}
  ];
  const general={title:'Open-ended TPDB metadata exploration',intro:'These are catalog-keyword matches only. A full-context AI prompt can explore broader translational hypotheses with the complete metadata, including items not surfaced here.',caution:'Keyword relevance is not scientific comparability. Missing metadata does not prove a measure or cohort is absent from TPDB. Human–mouse mappings and prospective mouse imaging analyses require independent review.'};
- let current={humans:[],mice:[],theme:null,query:''},expanded={human:false,mouse:false};
+ const themesJa={
+  schiz:{title:'脳構造と遺伝子モデルの関連',intro:'ヒトの皮質下MRI変数と、統合失調症関連のマウス遺伝子モデルを探します。共通する解剖学的領域は仮説の候補であり、対応する実測結果が検証されたわけではありません。',caution:'Setd1a/Xpo7群に記載されているのは実験群情報で、領域別MRI数値ではありません。ROI解析を提案する前に対照群との関係と画像へのアクセスを確認してください。Xpo7の雌WTはn=4と記載されています。異なる遺伝子系統の対照群を検証なしに統合しないでください。'},
+  depression:{title:'抑うつ症状と介入モデル',intro:'ヒトのうつ症状評価と構造MRI、マウスのコルチコステロン投与・治療群に関連する情報を表示します。マウス介入モデルはヒトの診断そのものではありません。',caution:'M018はCORT対照と記載されていますが、説明文にコルチコステロン溶媒の条件がありません。経口SSRIのM017と腹腔内生理食塩水のM012を適合した対照ペアとして扱わないでください。麻酔、溶媒、投与条件を確認してください。'},
+  ect:{title:'海馬構造とECT介入',intro:'ヒトの海馬測定項目と、用量・神経新生・効果持続を含むマウスECT群を確認します。マウスの領域別数値は別途画像解析が必要です。',caution:'ヒトの辞書にはECT治療歴が記載されていません。マウス効果持続群のnは6～7と少数です。M004には3回目／6回目の処置時点の不一致があり、確認が必要です。'},
+  eeg:{title:'電気生理と間接的な神経回路仮説',intro:'ヒトEEG測定は記載されています。一方、マウス側はex vivo構造MRIであり、マウスEEGや聴覚誘発電位は記載されていません。関連性を検討する場合は間接的な仮説として扱ってください。',caution:'マウスのMMN／ASSR測定が存在する、またはEEGとMRIが数値的に同等だと主張しないでください。マウスの聴覚回路MRI解析は将来の別途解析であり、マウス電気生理はTPDB外の追加実験が必要です。'},
+  antipsychotic:{title:'大脳基底核と抗精神病薬モデル',intro:'ヒトの大脳基底核MRI変数から、haloperidol投与やVGAT過剰発現マウスのMRI研究を検討できます。ただしヒトの投薬曝露はこの辞書に記載されていません。',caution:'M022/M023は投与／溶媒対照の組ですが、ヒトの抗精神病薬曝露は記載されていません。M024にはAAV対照が記載されておらず、注入した半球の確認も必要です。'}
+ };
+ const generalJa={title:'TPDBメタデータを広く探索',intro:'表示結果はカタログのキーワード一致によるものです。AIに渡す完全版プロンプトには、ここに表示されていない項目も含め全メタデータが入ります。',caution:'キーワード上の関連性は科学的な比較可能性を意味しません。記載がないことはTPDBにデータが存在しない証拠ではありません。ヒトとマウスの対応や新たなマウスMRI解析には別途検証が必要です。'};
+ function displayTheme(theme){return currentLang==='ja'?(theme?(themesJa[theme.key]||theme):generalJa):(theme||general);}
+  let current={humans:[],mice:[],theme:null,query:''},expanded={human:false,mouse:false};
  const esc=str=>String(str??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
  function norm(s){return String(s||'').toLowerCase().normalize('NFKC');}
  function tokenize(q){return norm(q).split(/[^\p{L}\p{N}_]+/u).filter(x=>x.length>=3 && !['with','from','human','mouse','data','study','could','would','brain','using','about','that','what','which','have','their','these','among','research','between','related','measures'].includes(x));}
@@ -193,12 +309,34 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
  function getRanked(items,preferred,terms){const ranked=items.map(item=>({item,s:score(item,terms),order:preferred.indexOf(item.id)}));if(preferred.length){return ranked.filter(x=>x.order>=0).sort((a,b)=>a.order-b.order).map(x=>x.item);}return ranked.filter(x=>x.s>0).sort((a,b)=>b.s-a.s).map(x=>x.item);}
  function chooseTheme(q){let matched=themes.filter(t=>t.test.test(q));if(!matched.length)return null;let scored=matched.map(t=>({t,s:([...q.matchAll(new RegExp(t.test.source,'ig'))].length || 1)}));scored.sort((a,b)=>b.s-a.s); // Choose the principal topic for preview. All catalog entries remain available in the AI prompt.
  return scored[0].t;}
- function runSearch(scroll=false){const q=$('question').value.trim();if(!q){$('question').focus();$('result-summary').textContent='Enter a research question to explore the catalog.';return;} const theme=chooseTheme(q), terms=tokenize(q), allThemes=themes.filter(t=>t.test.test(q)), humanIds=[...new Set(allThemes.flatMap(t=>t.human))],mouseIds=[...new Set(allThemes.flatMap(t=>t.mouse))];current={theme,query:q,humans:getRanked(DB.human,humanIds,terms),mice:getRanked(DB.mouse,mouseIds,terms)};expanded={human:false,mouse:false};$('route-title').textContent=theme?theme.title:general.title;$('route-intro').textContent=theme?theme.intro:general.intro;$('caution-text').textContent=theme?theme.caution:general.caution;$('result-summary').textContent=`${current.humans.length} human categories · ${current.mice.length} mouse groups surfaced by this preview. All ${DB.human.length} + ${DB.mouse.length} entries are included in the full AI prompt.`;render('human');render('mouse');updatePrompt();if(scroll)$('results-section').scrollIntoView({behavior:'smooth',block:'start'});}
- function humanCard(x){let vars=x.variables||[];let chips=vars.slice(0,3).map(v=>`<span class="pill">${esc(v.name)}</span>`).join('');return `<article class="entry"><div class="entry-id"><span class="id-code">${esc(x.id)}</span><span class="meta-code">${esc(x.sheet)} · row ${esc(x.row)}</span></div><h4>${esc(x.full_name||x.name)}</h4><p>${esc(x.name)} · ${vars.length} listed variables</p><div class="small-pills">${chips||'<span class="pill">No child variable codes listed</span>'}</div><details><summary>View catalog variables & source rows</summary><div class="detail"><div>${esc((x.description||'').slice(0,320))}</div>${vars.length?`<div class="varlist">${vars.map(v=>`<code title="Source row ${esc(v.row)}">${esc(v.name)} · r${esc(v.row)}</code>`).join('')}</div>`:'<div>Individual variable codes are not documented in this dictionary.</div>'}</div></details></article>`;}
- function mouseCard(x){const age=Array.isArray(x.age)?x.age.join('–'):x.age;return `<article class="entry"><div class="entry-id"><span class="id-code">${esc(x.id)}</span><span class="meta-code">${esc(x.project_id)} · Mouse row ${esc(x.row)}</span></div><h4>${esc(x.name)}</h4><p>${esc(x.project)}</p><div class="small-pills"><span class="pill">N=${esc(x.n??'not listed')} (reported)</span><span class="pill">${esc(x.sex||'Sex not listed')}</span>${age?`<span class="pill">${esc(age)} wk</span>`:''}</div><details><summary>View experimental conditions</summary><div class="detail"><b>${esc(x.description)}</b><div style="margin-top:5px">${esc(x.conditions||'Conditions not described')}</div><div style="margin-top:5px">No mouse regional scalar values in TPDB.</div></div></details></article>`;}
- function render(kind){const entries=kind==='human'?current.humans:current.mice,box=$(kind+'-list'),more=$(kind+'-more');$(kind+'-count').textContent=entries.length+' found';if(!entries.length){box.innerHTML=`<div class="empty"><strong>${kind==='mouse'&&current.theme?.key==='eeg'?'No matching mouse EEG dataset':'No direct keyword matches found'}</strong>${kind==='mouse'&&current.theme?.key==='eeg'?'The mouse catalog contains structural MRI groups, not EEG recordings. This does not exclude a separately designed indirect circuit study.':'Try another concept, or use the full-context AI prompt for broader research exploration.'}</div>`;more.innerHTML='';return;}const visible=expanded[kind]?entries:entries.slice(0,4);box.innerHTML=visible.map(kind==='human'?humanCard:mouseCard).join('');more.innerHTML=entries.length>4?`<button type="button" id="${kind}-toggle">${expanded[kind]?'Show fewer':`Show all ${entries.length} matches`} ${expanded[kind]?'↑':'↓'}</button>`:'';if(entries.length>4)$(kind+'-toggle').addEventListener('click',()=>{expanded[kind]=!expanded[kind];render(kind);});}
- function researchMode(){return document.querySelector('input[name="research-mode"]:checked').value;}
- function makePrompt(){
+ function updateResultPresentation(){
+  const d=displayTheme(current.theme);
+  $('route-title').textContent=d.title;
+  $('route-intro').textContent=d.intro;
+  $('caution-text').textContent=d.caution;
+  $('result-summary').textContent=currentLang==='ja'
+     ?`簡易検索でヒト${current.humans.length}カテゴリー・マウス${current.mice.length}群を表示しています。AI用プロンプトには全${DB.human.length}+${DB.mouse.length}件が含まれます。`
+     :`${current.humans.length} human categories · ${current.mice.length} mouse groups surfaced by this preview. All ${DB.human.length} + ${DB.mouse.length} entries are included in the full AI prompt.`;
+  render('human');render('mouse');
+ }
+ function runSearch(scroll=false){const q=$('question').value.trim();if(!q){$('question').focus();$('result-summary').textContent=t('Enter a research question to explore the catalog.','質問を入力してカタログを検索してください。');return;} const theme=chooseTheme(q), terms=tokenize(q), allThemes=themes.filter(t=>t.test.test(q)), humanIds=[...new Set(allThemes.flatMap(t=>t.human))],mouseIds=[...new Set(allThemes.flatMap(t=>t.mouse))];current={theme,query:q,humans:getRanked(DB.human,humanIds,terms),mice:getRanked(DB.mouse,mouseIds,terms)};expanded={human:false,mouse:false};updateResultPresentation();updatePrompt();if(scroll)$('results-section').scrollIntoView({behavior:'smooth',block:'start'});}
+ function humanCard(x){
+   const vars=x.variables||[];const isJa=currentLang==='ja';
+   const chips=vars.slice(0,3).map(v=>`<span class="pill">${esc(v.name)}</span>`).join('');
+   const head=(isJa&&(x.full_name_ja||x.name_ja))||(x.full_name||x.name);
+   const descriptions=isJa ? `${x.description_ja?`<p class="bilingual-field"><strong>日本語</strong> ${esc(x.description_ja)}</p>`:''}${x.description?`<p class="bilingual-field"><strong>English</strong> ${esc(x.description)}</p>`:''}`
+      : (x.description?`<p class="bilingual-field">${esc(x.description)}</p>`:'');
+   const variableDetails=vars.map(v=>`<div class="var-entry"><code>${esc(v.name)}</code><span class="meta-code">${esc(x.sheet)} · ${t('row','行')} ${esc(v.row)}</span>${isJa && v.description_ja?`<p><b>日本語</b> ${esc(v.description_ja)}</p>`:''}${v.description?`<p>${isJa?'<b>English</b> ':''}${esc(v.description)}</p>`:''}</div>`).join('');
+   return `<article class="entry"><div class="entry-id"><span class="id-code">${esc(x.id)}</span><span class="meta-code">${esc(x.sheet)} · ${t('row','行')} ${esc(x.row)}</span></div><h4>${esc(head)}</h4><p>${esc(x.name)} · ${vars.length} ${t('listed variables','変数')}</p><div class="small-pills">${chips||`<span class="pill">${t('No child variable codes listed','個別変数コードの記載なし')}</span>`}</div><details><summary>${t('View catalog variables & source rows','変数名と出典行を表示')}</summary><div class="detail">${descriptions}${vars.length?`<div class="var-details">${variableDetails}</div>`:`<p>${t('Individual variable codes are not documented in this dictionary.','個別変数コードはこの辞書に記載されていません。')}</p>`}</div></details></article>`;
+ }
+ function mouseCard(x){
+   const age=Array.isArray(x.age)?x.age.join('–'):x.age,isJa=currentLang==='ja';
+   const field=(label,en,jp)=>isJa?`${jp?`<p class="bilingual-field"><b>${esc(label)}（日本語）</b> ${esc(jp)}</p>`:''}${en?`<p class="bilingual-field"><b>${esc(label)} (English)</b> ${esc(en)}</p>`:''}`:(en?`<p class="bilingual-field"><b>${esc(label)}</b> ${esc(en)}</p>`:'');
+   return `<article class="entry"><div class="entry-id"><span class="id-code">${esc(x.id)}</span><span class="meta-code">${esc(x.project_id)} · ${t('Mouse row','マウス行')} ${esc(x.row)}</span></div><h4>${esc(x.name)}</h4><p>${esc(x.project)}</p><div class="small-pills"><span class="pill">N=${esc(x.n??t('not listed','記載なし'))} (${t('reported','記載値')})</span><span class="pill">${esc(x.sex||t('Sex not listed','性別の記載なし'))}</span>${age?`<span class="pill">${esc(age)} ${t('wk','週齢')}</span>`:''}</div><details><summary>${t('View experimental conditions','実験条件を見る')}</summary><div class="detail">${field(t('Description','説明'),x.description,x.description_ja)}${field(t('Experimental conditions','実験条件'),x.conditions,x.conditions_ja)}${field(t('Data access','データへのアクセス'),x.data_access,x.data_access_ja)}<p>${t('No mouse regional scalar values in TPDB.','TPDBにマウスの脳領域別数値データはありません。')}</p></div></details></article>`;
+ }
+ function render(kind){const entries=kind==='human'?current.humans:current.mice,box=$(kind+'-list'),more=$(kind+'-more');$(kind+'-count').textContent=entries.length+t(' found',' 件');if(!entries.length){const eeg=kind==='mouse'&&current.theme?.key==='eeg';box.innerHTML=`<div class="empty"><strong>${t(eeg?'No matching mouse EEG dataset':'No direct keyword matches found',eeg?'該当するマウスEEGデータセットはありません':'該当するキーワード一致はありません')}</strong>${t(eeg?'The mouse catalog contains structural MRI groups, not EEG recordings. This does not exclude a separately designed indirect circuit study.':'Try another concept, or use the full-context AI prompt for broader research exploration.',eeg?'マウスカタログは構造MRIでありEEG記録は含まれません。別途設計する神経回路研究の可能性まで否定するものではありません。':'別の用語を試すか、完全版カタログを含むAIプロンプトで広く検討してください。')}</div>`;more.innerHTML='';return;}const visible=expanded[kind]?entries:entries.slice(0,4);box.innerHTML=visible.map(kind==='human'?humanCard:mouseCard).join('');more.innerHTML=entries.length>4?`<button type="button" id="${kind}-toggle">${expanded[kind]?t('Show fewer','表示を減らす'):t(`Show all ${entries.length} matches`, `全${entries.length}件を表示`)} ${expanded[kind]?'↑':'↓'}</button>`:'';if(entries.length>4)$(kind+'-toggle').addEventListener('click',()=>{expanded[kind]=!expanded[kind];render(kind);});}
+  function researchMode(){return document.querySelector('input[name="research-mode"]:checked').value;}
+ function makePromptEnglish(){
    if(!catalogReady)throw new Error('The current TPDB catalog is not available. Refresh before preparing an AI prompt.');
    const q=$('question').value.trim()||'Explore the TPDB catalog to identify scientifically justified research possibilities.';
    const mode=researchMode();
@@ -208,11 +346,41 @@ Use ONLY the TPDB catalog below. Do not browse, cite external literature as new 
    return `# TPDB Research Assistant — Researcher question\n\n${q}\n\n## General instructions\nAnswer the question directly, referencing H/M/P identifiers and worksheet rows for claims about the TPDB catalog. Do not invent mouse scalar values, participant-level data, mouse image download URLs, diagnoses, sample sizes, experimental-control compatibility, or verified cross-species mappings. Mouse processed images exist outside the TPDB database and regional mouse scalars are not provided by TPDB. Treat anything missing from metadata as "not documented" rather than "does not exist".\n\nDo NOT manufacture or force a human–mouse research question. Offer integrative hypotheses only when grounded in a defensible biological, anatomical, or methodological rationale. A human-only, mouse-only or "no supportable link" conclusion is welcome if it better answers the researcher's question. Do not impose a fixed number of research questions. When possible, make proposed next steps concrete, note uncertainties and distinguish documented data from prospective analysis.\n\n${evidence}\n\n## Catalog provenance\nPublished: ${DB.generated_at||'not available'}; source: ${DB.source||'TPDB spreadsheet'}. Only this published snapshot has been loaded by the website; do not claim it is synced at the exact moment of your response.\n\n---\n\n# Complete TPDB catalog and scientific notes\n\n${DB.context}`;
  }
 
- function updatePrompt(){const pre=$('preview-text');if(pre)pre.value=catalogReady?makePrompt():'Catalog not loaded. AI handoff unavailable until a current catalog has been retrieved.';}
+ function makePromptJapanese(){
+   if(!catalogReady)throw new Error('TPDBカタログが利用できません。再読み込みしてください。');
+   const q=$('question').value.trim()||'TPDBカタログを利用して、科学的根拠のある研究の可能性を検討してください。';
+   const evidence=researchMode()==='literature' ? `## 研究モード：文献も参考にする（研究者が選択）
+利用するAIサービスにウェブ検索または信頼できる文献確認機能がある場合に限り、関連する一次研究論文を調べてください。著者、年、論文名、DOIなどを可能な範囲で確認し、参照先を示してください。TPDBに記載されたデータの有無、外部論文の知見、仮説・将来の解析を明確に区別してください。検索できない場合はその限界を明示し、TPDBメタデータだけで回答してください。外部論文で報告された測定がTPDBに存在するとみなさないでください。` : `## 研究モード：TPDBのカタログのみ（研究者が選択）
+以下のTPDBメタデータのみを根拠にしてください。外部文献を新たな根拠として参照せず、カタログで確認できない研究結果を主張しないでください。カタログ中の文献は参考文献であり、TPDBで得られた数値結果そのものではありません。`;
+   return `# TPDB研究アシスタント — 研究者の質問
+
+${q}
+
+## 回答言語と基本方針
+日本語で回答してください。原文の測定名・変数名・H/M/P ID・学術用語は必要に応じてそのまま引用してください。質問に直接答え、TPDB内の情報についてはH/M/P IDと元のワークシートの行番号を示してください。
+
+マウスの領域別数値、参加者レベルのデータ、マウス画像のダウンロードURL、診断内訳、サンプル数、対照群との適合性、確立した種間対応関係を捏造しないでください。処理済みマウスMRI画像はTPDBの外部に存在し、TPDBからマウスの領域別数値は提供されません。メタデータに記載がない場合は、「存在しない」ではなく「このカタログには記載されていない」と表現してください。
+
+ヒトとマウスを無理に結び付けたり、研究質問の数を強制したりしないでください。生物学的・解剖学的・方法論的に十分な根拠がある場合にのみ、統合的な仮説を提案してください。ヒトのみ、マウスのみ、または妥当な対応がないという結論でも構いません。実施可能性、必要な確認事項、既存データと今後の解析の区別を明示してください。
+
+${evidence}
+
+## カタログの出典と公開時点
+公開日時：${DB.generated_at||'不明'}。出典：${DB.source||'TPDBスプレッドシート'}。サイトが読み込んだ公開版スナップショットです。回答時点でGoogle Sheetsと完全に同期しているとは断定しないでください。
+
+---
+
+# TPDBカタログ全文と科学的注意事項（英語・日本語併記）
+
+${DB.context}`;
+ }
+ function makePrompt(){return currentLang==='ja'?makePromptJapanese():makePromptEnglish();}
+
+ function updatePrompt(){const pre=$('preview-text');if(pre)pre.value=catalogReady?makePrompt():t('Catalog not loaded. AI handoff unavailable until a current catalog has been retrieved.','カタログを読み込めません。最新のカタログが取得されるまでAIへの受け渡しは利用できません。');}
  async function copyText(text){try{if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(text);return true;}}catch(e){}try{const field=document.createElement('textarea');field.value=text;field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.focus();field.select();const success=document.execCommand('copy');document.body.removeChild(field);return success;}catch(e){return false;}}
- async function copyPrompt(){if(!catalogReady)return false;const txt=makePrompt(),status=$('copy-status'),manual=$('manual-panel');status.classList.remove('error');const ok=await copyText(txt);if(ok){status.textContent='Copied! Open your AI service and paste the context.';manual.classList.remove('show');}else{status.textContent='Automatic copying is unavailable here. Use the manual copy field or download the prompt.';status.classList.add('error');manual.classList.add('show');$('manual-text').value=txt;}};
- function downloadPrompt(){if(!catalogReady)return;const blob=new Blob([makePrompt()],{type:'text/markdown;charset=utf-8'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='TPDB_research_prompt.md';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);$('copy-status').textContent='Markdown prompt saved. You can upload it to your AI service.';}
- document.querySelectorAll('[data-example]').forEach(btn=>btn.addEventListener('click',()=>{$('question').value=examples[btn.dataset.example];document.querySelectorAll('[data-example]').forEach(b=>b.classList.toggle('active',b===btn));runSearch(false);$('question').focus();}));
+ async function copyPrompt(){if(!catalogReady)return false;const txt=makePrompt(),status=$('copy-status'),manual=$('manual-panel');status.classList.remove('error');const ok=await copyText(txt);if(ok){status.textContent=t('Copied! Open your AI service and paste the context.','コピーしました。AIサービスを開いてプロンプトを貼り付けてください。');manual.classList.remove('show');}else{status.textContent=t('Automatic copying is unavailable here. Use the manual copy field or download the prompt.','自動コピーできませんでした。手動コピー欄を利用するかプロンプトを保存してください。');status.classList.add('error');manual.classList.add('show');$('manual-text').value=txt;}};
+ function downloadPrompt(){if(!catalogReady)return;const blob=new Blob([makePrompt()],{type:'text/markdown;charset=utf-8'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=(currentLang==='ja'?'TPDB_research_prompt_ja.md':'TPDB_research_prompt_en.md');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);$('copy-status').textContent=t('Markdown prompt saved. You can upload it to your AI service.','Markdownプロンプトを保存しました。AIサービスにアップロードできます。');}
+ document.querySelectorAll('[data-example]').forEach(btn=>btn.addEventListener('click',()=>{$('question').value=(currentLang==='ja'?examplesJa:examples)[btn.dataset.example];document.querySelectorAll('[data-example]').forEach(b=>b.classList.toggle('active',b===btn));runSearch(false);$('question').focus();}));
  $('question').addEventListener('input',()=>{document.querySelectorAll('[data-example]').forEach(b=>b.classList.remove('active'));updatePrompt();});
  $('question').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();runSearch(true);}});
  $('explore-btn').addEventListener('click',()=>runSearch(true));$('copy-btn').addEventListener('click',copyPrompt);$('download-btn').addEventListener('click',downloadPrompt);
@@ -220,14 +388,18 @@ Use ONLY the TPDB catalog below. Do not browse, cite external literature as new 
  document.querySelector('.prompt-preview summary').addEventListener('click',()=>updatePrompt());
  document.querySelectorAll('input[name="research-mode"]').forEach(r=>r.addEventListener('change',updatePrompt));
  function setHandoffEnabled(enabled){$('copy-btn').disabled=!enabled;$('download-btn').disabled=!enabled;document.querySelectorAll('[data-provider]').forEach(a=>a.setAttribute('aria-disabled',String(!enabled)));}
- function isoDateString(iso){const date=new Date(iso);return Number.isNaN(date.getTime())?'date unavailable':date.toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Tokyo'})+' JST';}
+ function isoDateString(iso){const date=new Date(iso);return Number.isNaN(date.getTime())?t('date unavailable','日時不明'):date.toLocaleString(currentLang==='ja'?'ja-JP':'en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Tokyo'})+' JST';}
  async function loadCatalog(){
-   const status=$('catalog-status'),message=$('catalog-message');setHandoffEnabled(false);catalogReady=false;status.dataset.state='loading';message.textContent='Checking the published TPDB catalog…';updatePrompt();
+   const requestedLang=currentLang,request=++catalogRequest;
+   const status=$('catalog-status'),message=$('catalog-message');setHandoffEnabled(false);catalogReady=false;DB.human=[];DB.mouse=[];DB.context='';status.dataset.state='loading';message.textContent=t('Checking the published TPDB catalog…','公開されたTPDBカタログを確認しています…');updatePrompt();
    try{
-     const sep=CATALOG_URL.includes('?')?'&':'?';
-     const response=await fetch(CATALOG_URL+sep+'v='+Date.now(),{cache:'no-store'});
+     const sep=CATALOG_URLS[requestedLang].includes('?')?'&':'?';
+     const response=await fetch(CATALOG_URLS[requestedLang]+sep+'v='+Date.now(),{cache:'no-store'});
+     if(request!==catalogRequest)return;
      if(!response.ok)throw new Error('HTTP '+response.status);
      const next=await response.json();
+     if(request!==catalogRequest)return;
+     if(next.catalog_language!==(requestedLang==='ja'?'en+ja':'en'))throw new Error('Incorrect catalog language');
      if(!Array.isArray(next.human)||!Array.isArray(next.mouse)||typeof next.context!=='string'||next.context.length<1000)throw new Error('Incomplete published catalog');
      const time=new Date(next.generated_at).getTime();
      if(!Number.isFinite(time))throw new Error('Missing valid publication timestamp');
@@ -235,24 +407,52 @@ Use ONLY the TPDB catalog below. Do not browse, cite external literature as new 
      const demoSnapshot=/initial snapshot|pilot-snapshot/i.test(String(next.source)+' '+String(next.version));
      if(!demoSnapshot && (age>CATALOG_MAX_AGE_HOURS || age < -24))throw new Error('Catalog publication is stale or has a future timestamp ('+isoDateString(next.generated_at)+')');
      if(!next.human.length || !next.mouse.length)throw new Error('Unexpectedly empty catalog');
-     DB.human=next.human;DB.mouse=next.mouse;DB.context=next.context;DB.version=next.version||'unversioned';DB.generated_at=next.generated_at;DB.source=next.source;
+     DB.human=next.human;DB.mouse=next.mouse;DB.context=next.context;DB.version=next.version||'unversioned';DB.generated_at=next.generated_at;DB.source=next.source;DB.catalog_language=next.catalog_language;
      document.getElementById('stat-human').textContent=DB.human.length;
      document.getElementById('stat-mouse').textContent=DB.mouse.length;
      document.getElementById('stat-projects').textContent=new Set(DB.mouse.map(x=>x.project_id)).size;
-     catalogReady=true;setHandoffEnabled(true);
+     demoSnapshotLoaded=demoSnapshot;catalogReady=true;setHandoffEnabled(true);
      status.dataset.state=demoSnapshot?'loading':'ready';
-     message.textContent=(demoSnapshot?'DEMO SNAPSHOT — auto-sync not connected · ':'Automatically published catalog · ')+isoDateString(DB.generated_at)+' · '+DB.human.length+' human / '+DB.mouse.length+' mouse entries';
+     updateCatalogStatusMessage();
      runSearch(false);updatePrompt();
    }catch(error){
-     status.dataset.state='error';message.textContent='Current catalog unavailable: '+error.message+'; AI handoff disabled. Please refresh or contact TPDB.';
-     $('result-summary').textContent='Unable to load verified current catalog. Local discovery is unavailable.';
+     if(request!==catalogRequest)return;
+     status.dataset.state='error';message.textContent=t('Current catalog unavailable: ','現在のカタログを取得できません：')+error.message+t('; AI handoff disabled. Please refresh or contact TPDB.','。AIへの受け渡しは停止しています。再読み込みするかTPDBへお問い合わせください。');
+     $('result-summary').textContent=t('Unable to load verified current catalog. Local discovery is unavailable.','確認済みの最新カタログを読み込めません。ローカル検索は利用できません。');
      $('human-list').replaceChildren();$('mouse-list').replaceChildren();
      setHandoffEnabled(false);updatePrompt();
    }
  }
+ function updateCatalogStatusMessage(){
+   if(!catalogReady)return;
+   $('catalog-message').textContent=(demoSnapshotLoaded?t('DEMO SNAPSHOT — auto-sync not connected · ','デモ用データ — 自動同期は未接続 · '):t('Automatically published catalog · ','自動公開カタログ · '))
+      +(currentLang==='ja'?'日本語＋English · ':'English only · ')+isoDateString(DB.generated_at)+' · '+DB.human.length+t(' human / ',' ヒト / ')+DB.mouse.length+t(' mouse entries',' マウス群');
+ }
+ function setLanguage(language){
+   if(language!=='ja'&&language!=='en')return;
+   const prior=currentLang;
+   const active=document.querySelector('[data-example].active');
+   if(active && $('question').value === (prior==='ja'?examplesJa:examples)[active.dataset.example]){
+     $('question').value=(language==='ja'?examplesJa:examples)[active.dataset.example];
+   }
+   currentLang=language;
+   translateStatic();
+   if(prior!==language || !catalogReady){
+     // Load only the newly selected catalog; prevent prompts from mixing languages.
+     loadCatalog();
+   }else{updateCatalogStatusMessage();updateResultPresentation();updatePrompt();}
+   if($('manual-panel').classList.contains('show'))$('manual-text').value=catalogReady?makePrompt():'';
+   $('copy-status').textContent='';
+   try{localStorage.setItem('tpdb-language',language);}catch(e){}
+ }
+ initializeTranslations();
+ $('lang-en').addEventListener('click',()=>setLanguage('en'));
+ $('lang-ja').addEventListener('click',()=>setLanguage('ja'));
+ let stored='en';try{stored=localStorage.getItem('tpdb-language')||'en';}catch(e){}
+ if(stored!=='en'&&stored!=='ja')stored=(new URLSearchParams(location.search).get('lang')==='ja'?'ja':'en');
+ setLanguage(stored);
  $('refresh-catalog').addEventListener('click',loadCatalog);
- loadCatalog();
- window.TPDB_DEMO={getSummary:()=>({loaded:catalogReady,human:DB.human.length,mouse:DB.mouse.length,contextChars:DB.context.length,selected:current.theme?.key||null,mode:researchMode(),generatedAt:DB.generated_at||null}),search:q=>{$('question').value=q;if(catalogReady)runSearch(false);return {human:current.humans.map(x=>x.id),mouse:current.mice.map(x=>x.id)};},getPrompt:()=>makePrompt()};
+ window.TPDB_DEMO={getSummary:()=>({language:currentLang,catalogLanguage:DB.catalog_language,loaded:catalogReady,human:DB.human.length,mouse:DB.mouse.length,contextChars:DB.context.length,selected:current.theme?.key||null,mode:researchMode(),generatedAt:DB.generated_at||null}),search:q=>{$('question').value=q;if(catalogReady)runSearch(false);return {human:current.humans.map(x=>x.id),mouse:current.mice.map(x=>x.id)};},getPrompt:()=>makePrompt(),setLanguage:lang=>setLanguage(lang)};
 })();
 </script>
 </body></html>
