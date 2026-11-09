@@ -81,6 +81,35 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
 .lang-button:hover:not([aria-pressed="true"]){background:#e0eaf4}
 @media(max-width:680px){.language-toggle{margin-left:auto}.lang-button{padding:6px 7px;font-size:11px}.toplinks a.active span{display:none}.toplinks{gap:10px}.brand-main{font-size:16px}}
 .bilingual-field{margin:6px 0!important;white-space:pre-wrap;overflow-wrap:anywhere}.bilingual-field b,.bilingual-field strong{display:inline-block;color:#225c75;margin-right:5px}.var-details{max-height:230px;overflow:auto;margin-top:9px}.var-entry{padding:6px 0;border-bottom:1px solid #edf2f5}.var-entry p{white-space:pre-wrap;overflow-wrap:anywhere;margin:4px 0!important}.entry .detail{line-height:1.6}
+
+/* Feedback collector v1.5 — new UI only; local search and AI instructions remain intact. */
+.feedback-invite{margin-top:19px;padding:16px;border:1px solid #dce6f1;background:#f7faff;border-radius:9px}
+.feedback-invite strong{display:block;font-size:13px;color:#2d4765;margin-bottom:5px}
+.feedback-invite p{font-size:12px;color:#63788e;margin:0 0 11px}
+.feedback-invite .btn{font-size:12px;min-height:38px;padding:9px 13px}
+.feedback-backdrop[hidden]{display:none!important}
+.feedback-backdrop{position:fixed;inset:0;z-index:9999;display:flex;justify-content:center;align-items:center;background:rgba(14,29,48,.56);padding:16px;overscroll-behavior:contain}
+.feedback-modal{position:relative;width:min(100%,512px);max-height:min(90vh,740px);overflow-y:auto;background:#fff;border-radius:13px;border:1px solid #dce5f1;box-shadow:0 22px 65px rgba(7,26,48,.25);padding:24px}
+.feedback-modal h2{margin:0 36px 6px 0;font-size:20px;color:#203852;line-height:1.35}
+.feedback-modal .feedback-lead{font-size:12px;color:#62778d;margin:0 30px 17px 0}
+.feedback-dismiss{position:absolute;right:13px;top:13px;border:1px solid #dce5ee;color:#4b5d70;background:#fff;border-radius:7px;width:32px;height:32px;font-size:23px;line-height:26px}
+.feedback-modal fieldset{border:0;padding:0;margin:0 0 15px;min-width:0}
+.feedback-modal legend,.feedback-modal label.feedback-label{display:block;font-size:13px;font-weight:750;margin-bottom:9px;color:#2f4762}
+.feedback-options{display:grid;gap:7px}
+.feedback-option{display:flex;gap:9px;align-items:center;min-height:40px;padding:9px 11px;background:#fafcff;border:1px solid #e2eaf2;border-radius:8px;font-size:13px;color:#41566c;cursor:pointer}
+.feedback-option:has(input:checked){border-color:#83b4e6;background:#edf5ff}
+.feedback-option input{flex:none;accent-color:#2563a6;width:16px;height:16px}
+.feedback-note{width:100%;min-height:74px;max-height:170px;border:1px solid #ccd9e8;border-radius:8px;padding:10px 11px;background:#fff;color:#233d52;font-size:13px;resize:vertical}
+.feedback-question-choice{display:flex;gap:9px;align-items:flex-start;font-size:12px;color:#3e5267;cursor:pointer;margin-top:12px}
+.feedback-question-choice input{margin-top:2px;accent-color:#2563a6;flex:none}
+.feedback-privacy{font-size:11px;color:#6b7b8d;margin:12px 0 0;line-height:1.55}
+.feedback-modal-actions{display:flex;gap:9px;flex-wrap:wrap;align-items:center;margin-top:18px}
+.feedback-submit{min-width:146px}.feedback-submit[disabled]{opacity:.6;cursor:wait}
+.feedback-status{min-height:22px;font-size:12px;color:#305d81;margin-top:12px;line-height:1.55}
+.feedback-status[data-kind="error"]{color:#af3b37}.feedback-status[data-kind="ok"]{color:#267451}
+body.feedback-opened{overflow:hidden}
+@media(max-width:580px){.feedback-backdrop{padding:10px;align-items:flex-end}.feedback-modal{padding:20px 17px;max-height:94vh;border-radius:12px 12px 5px 5px}.feedback-modal h2{font-size:18px}.feedback-modal-actions .btn{flex:1}}
+
 </style>
 </head>
 <body>
@@ -137,7 +166,7 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
    <div class="flow-line"><div class="flow-icon"><svg class="icon" aria-hidden="true"><use href="#icon-mouse"/></svg></div><div><b>Mouse experimental models</b><p>Group design, interventions, sex, reported sample sizes and ex vivo MRI acquisition metadata.</p></div></div>
    <div class="subtle-divider"></div>
    <div class="side-note"><strong><svg class="icon" aria-hidden="true"><use href="#icon-info"/></svg> Important scientific boundary</strong><p>TPDB does not provide mouse regional scalar values. Processed mouse MRI images exist outside the database. Candidate human–mouse connections require scientific review and potentially additional image analysis.</p></div>
-   <div class="scope-note"><svg class="icon" aria-hidden="true"><use href="#icon-shield"/></svg> <b>Privacy by design.</b> Questions stay in your browser during this preview. Nothing is sent to TPDB or an AI provider until you choose to paste it into your own AI account.</div>
+   <div class="scope-note"><svg class="icon" aria-hidden="true"><use href="#icon-shield"/></svg> <b>Privacy by design.</b> Your research question stays in this browser unless you choose to include it in feedback or paste the prompt into your AI account. Optional feedback is sent to TPDB only when you submit it.</div>
   </aside>
  </div>
  <div class="section-title" id="results-section"><div><h2>Explore the catalog</h2><p id="result-summary" aria-live="polite">Showing metadata related to your research question.</p></div><a class="source-link" href="https://tpdb.tokyo/terms" target="_blank" rel="noopener noreferrer">Browse TPDB human terms ↗</a></div>
@@ -150,10 +179,38 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
  <section class="panel handoff" id="handoff" aria-labelledby="handoff-heading"><div class="panel-head"><span class="stepnum"><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"/></svg></span><div><h2 id="handoff-heading">Continue in your preferred AI service</h2><p class="secondary">The entire latest loaded catalog goes into the prompt; local search results do not restrict what the AI can consider.</p></div></div>
  <div class="handoff-layout">
   <div><div class="handoff-copy"><strong style="font-size:14px">Prepare a full research prompt</strong><p>Includes your question, the latest successfully loaded TPDB catalog, source IDs, research rules and limitations. No AI API key or new TPDB subscription.</p><div class="row-gap"><button class="btn primary" type="button" id="copy-btn" disabled><svg class="icon" aria-hidden="true"><use href="#icon-clipboard"/></svg> Copy full context + question</button><button class="btn outline" type="button" id="download-btn" disabled><svg class="icon" aria-hidden="true"><use href="#icon-download"/></svg> Download prompt .md</button></div><div role="status" aria-live="polite" class="status" id="copy-status"></div><div class="manual" id="manual-panel"><label for="manual-text" style="font-size:12px;font-weight:700">Copy manually from here:</label><textarea id="manual-text" readonly></textarea></div></div><details class="prompt-preview"><summary>Preview the generated prompt</summary><textarea id="preview-text" readonly aria-label="Generated AI prompt"></textarea></details></div>
-  <div><p class="handoff-explain"><strong>Use the AI service you already have</strong></p><ol class="handoff-explain"><li>Copy the prepared context and question.</li><li>Open your AI service.</li><li>Paste the prompt and send it.</li></ol><div class="providerlist"><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" data-provider="ChatGPT">ChatGPT ↗</a><a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" data-provider="Claude">Claude ↗</a><a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" data-provider="Gemini">Gemini ↗</a></div><p class="fineprint">Opening a provider doesn't automatically paste the prompt. Provider limits and your account's usage terms apply. No AI-generated reply is produced on this TPDB page.</p></div>
+  <div><p class="handoff-explain"><strong>Use the AI service you already have</strong></p><ol class="handoff-explain"><li>Copy the prepared context and question.</li><li>Open your AI service.</li><li>Paste the prompt and send it.</li></ol><div class="providerlist"><a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" data-provider="ChatGPT">ChatGPT ↗</a><a href="https://claude.ai/" target="_blank" rel="noopener noreferrer" data-provider="Claude">Claude ↗</a><a href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" data-provider="Gemini">Gemini ↗</a></div><p class="fineprint">Opening a provider doesn't automatically paste the prompt. Provider limits and your account's usage terms apply. No AI-generated reply is produced on this TPDB page.</p><div class="feedback-invite"><strong><span data-fb-en="Was the AI response inaccurate or unhelpful?" data-fb-ja="AIの回答に誤りや改善点がありましたか？">Was the AI response inaccurate or unhelpful?</span></strong><p><span data-fb-en="Help us improve TPDB's research prompts. Takes about 20 seconds." data-fb-ja="TPDBの研究用プロンプトの改善にご協力ください。20秒程度で報告できます。">Help us improve TPDB's research prompts. Takes about 20 seconds.</span></p><button class="btn outline" type="button" id="feedback-open"><svg class="icon" aria-hidden="true"><use href="#icon-alert"/></svg><span data-fb-en="Report an AI response" data-fb-ja="AIの回答について報告">Report an AI response</span></button></div></div>
  </div></section>
 </main>
 <footer class="footer"><div class="container"><div>© 2026 Translational Psychiatry Database <span class="footer-demo">· Research Assistant demo</span></div><div class="footer-links"><a href="https://tpdb.tokyo/terms">用語集</a><a href="https://tpdb.tokyo/mouse">マウス</a><a href="https://tpdb.tokyo/contact">お問い合わせ</a></div></div></footer>
+
+
+<!-- Feedback is optional. No AI service responses are accessed automatically. -->
+<div class="feedback-backdrop" id="feedback-backdrop" hidden aria-hidden="true">
+ <div class="feedback-modal" role="dialog" aria-modal="true" aria-labelledby="feedback-title" aria-describedby="feedback-lead">
+  <button type="button" class="feedback-dismiss" id="feedback-close" aria-label="Close">×</button>
+  <h2 id="feedback-title" data-fb-en="Help improve TPDB's AI prompts" data-fb-ja="TPDBのAIプロンプト改善にご協力ください">Help improve TPDB's AI prompts</h2>
+  <p id="feedback-lead" class="feedback-lead" data-fb-en="What went wrong with the answer you got from ChatGPT, Claude, Gemini or another AI?" data-fb-ja="ChatGPT、Claude、Geminiなどの回答で、どのような問題がありましたか？">What went wrong with the answer you got from ChatGPT, Claude, Gemini or another AI?</p>
+  <form id="feedback-form" novalidate>
+   <fieldset>
+    <legend data-fb-en="What was the main issue?" data-fb-ja="主な問題は何でしたか？">What was the main issue?</legend>
+    <div class="feedback-options">
+     <label class="feedback-option"><input type="radio" name="feedback-issue" value="incorrect" required><span data-fb-en="Incorrect or misleading information" data-fb-ja="不正確・誤解を招く情報">Incorrect or misleading information</span></label>
+     <label class="feedback-option"><input type="radio" name="feedback-issue" value="irrelevant"><span data-fb-en="Unrelated to my question" data-fb-ja="質問と関係のない回答">Unrelated to my question</span></label>
+     <label class="feedback-option"><input type="radio" name="feedback-issue" value="unhelpful"><span data-fb-en="Too generic or not useful" data-fb-ja="一般的すぎる・役に立たない">Too generic or not useful</span></label>
+     <label class="feedback-option"><input type="radio" name="feedback-issue" value="other"><span data-fb-en="Other" data-fb-ja="その他">Other</span></label>
+    </div>
+   </fieldset>
+   <label class="feedback-label" for="feedback-details"><span data-fb-en="What should be improved? (optional)" data-fb-ja="改善してほしい点（任意）">What should be improved? (optional)</span></label>
+   <textarea id="feedback-details" class="feedback-note" maxlength="1500" rows="3" placeholder="One sentence is enough. You may paste a short excerpt."></textarea>
+   <label class="feedback-question-choice"><input type="checkbox" id="feedback-include-question"><span data-fb-en="Include the research question currently in the box above" data-fb-ja="上の入力欄にある研究質問も送信する">Include the research question currently in the box above</span></label>
+   <p class="feedback-privacy" data-fb-en="Only your chosen issue, optional explanation, and technical context (AI service if known, mode, catalog version, language and time) are sent. Your question is sent only if you check the box. We cannot access the AI's answer automatically. Please do not enter personal or confidential information." data-fb-ja="選択した問題、任意の説明、および技術情報（判明している場合のAIサービス、モード、カタログ版、言語、時刻）だけを送信します。研究質問はチェックを付けた場合のみ送信します。AIの回答は自動取得できません。個人情報・機密情報は入力しないでください。">Only your chosen issue, optional explanation, and technical context (AI service if known, mode, catalog version, language and time) are sent. Your question is sent only if you check the box. We cannot access the AI's answer automatically. Please do not enter personal or confidential information.</p>
+   <div class="feedback-modal-actions"><button class="btn primary feedback-submit" id="feedback-submit" type="submit"><span id="feedback-submit-text">Send feedback</span></button><button class="btn outline" type="button" id="feedback-cancel"><span data-fb-en="Cancel" data-fb-ja="キャンセル">Cancel</span></button></div>
+   <div id="feedback-status" class="feedback-status" role="status" aria-live="polite"></div>
+   <input type="text" name="company_website" id="feedback-honeypot" style="position:absolute;left:-99999px;width:1px;height:1px" aria-hidden="true" tabindex="-1" autocomplete="off">
+  </form>
+ </div>
+</div>
 
 <script>
 (()=>{'use strict';
@@ -164,6 +221,15 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
  // Language-specific public metadata. Only the selected language's JSON is fetched.
  const CATALOG_URLS={en:'./tpdb_bundle.en.json',ja:'./tpdb_bundle.ja.json'};
  const CATALOG_MAX_AGE_HOURS=72; // Fail closed if last publish is older than this; tune for production.
+ // PASTE THE SEPARATE FEEDBACK COLLECTOR'S /exec URL HERE after deployment.
+ // Leave empty for local/demo mode: feedback is copied, never silently sent.
+ const FEEDBACK_ENDPOINT='https://script.google.com/macros/s/AKfycbwo2y-G0tO7N-OxEVbdgk1jLrsJsVT8ArA9F6UECeBCpjty5Hz4-aq3Gr1VPlP-Il_E/exec';
+ const TPDB_PROMPT_TEMPLATE_VERSION='2026-11-04-v1';
+ const TPDB_WEBSITE_VERSION='1.5.0';
+ let lastFeedbackProvider='unknown';
+ let lastHandoffMeta=null;
+ try{lastFeedbackProvider=sessionStorage.getItem('tpdb-last-provider')||'unknown';}catch(e){}
+
 
  const $=id=>document.getElementById(id);
  const byId=(arr,id)=>arr.find(x=>x.id===id);
@@ -205,7 +271,7 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
     'Important scientific boundary':['Important scientific boundary','科学的な利用上の注意'],
     'TPDB does not provide mouse regional scalar values. Processed mouse MRI images exist outside the database. Candidate human–mouse connections require scientific review and potentially additional image analysis.':['TPDB does not provide mouse regional scalar values. Processed mouse MRI images exist outside the database. Candidate human–mouse connections require scientific review and potentially additional image analysis.','TPDBではマウスの脳領域別の数値データを提供していません。処理済みMRI画像はTPDBの外部に存在します。ヒトとマウスの対応関係は科学的な検証が必要で、追加の画像解析を要する場合があります。'],
     'Privacy by design.':['Privacy by design.','プライバシーへの配慮。'],
-    'Questions stay in your browser during this preview. Nothing is sent to TPDB or an AI provider until you choose to paste it into your own AI account.':['Questions stay in your browser during this preview. Nothing is sent to TPDB or an AI provider until you choose to paste it into your own AI account.','このプレビューでは質問はブラウザー内に保持されます。ご自身のAIアカウントにプロンプトを貼り付けるまで、TPDBやAIサービスへ質問は送信されません。'],
+    'Your research question stays in this browser unless you choose to include it in feedback or paste the prompt into your AI account. Optional feedback is sent to TPDB only when you submit it.':['Your research question stays in this browser unless you choose to include it in feedback or paste the prompt into your AI account. Optional feedback is sent to TPDB only when you submit it.','研究質問は、フィードバックへの添付を選ぶか、ご自身のAIアカウントに貼り付けない限りブラウザー内に保持されます。任意のフィードバックは送信操作を行った場合のみTPDBに送られます。'],
     'Explore the catalog':['Explore the catalog','カタログを調べる'],
     'Browse TPDB human terms ↗':['Browse TPDB human terms ↗','TPDBのヒト用語集を見る ↗'],
     'Research pathway · preliminary':['Research pathway · preliminary','研究の方向性・予備的な提案'],
@@ -242,6 +308,13 @@ a:focus-visible,button:focus-visible,textarea:focus-visible,input:focus-visible,
    }
  }
  function translateStatic(){for(const {node,original,key} of staticNodes){node.nodeValue=original.replace(key,t(key));}
+   document.querySelectorAll('[data-fb-en][data-fb-ja]').forEach(el=>{
+     el.textContent=el.getAttribute(currentLang==='ja'?'data-fb-ja':'data-fb-en');
+   });
+   $('feedback-details').placeholder=t('One sentence is enough. You may paste a short excerpt.','一文でも構いません。問題のある回答の一部を貼り付けることもできます。');
+   $('feedback-close').setAttribute('aria-label',t('Close feedback form','フィードバック画面を閉じる'));
+   $('feedback-submit-text').textContent=FEEDBACK_ENDPOINT?t('Send feedback','送信する'):t('Copy feedback (demo)','報告内容をコピー（デモ）');
+
    document.documentElement.lang=currentLang;
    document.title=currentLang==='ja'?'脳研究データベース | TPDB 研究アシスタント':'TPDB Research Assistant | Translational Psychiatric Database';
    document.querySelector('.brand-main').textContent=currentLang==='ja'?'脳研究データベース':'TPDB Research Database';
@@ -376,15 +449,106 @@ ${DB.context}`;
 
  function updatePrompt(){const pre=$('preview-text');if(pre)pre.value=catalogReady?makePrompt():t('Catalog not loaded. AI handoff unavailable until a current catalog has been retrieved.','カタログを読み込めません。最新のカタログが取得されるまでAIへの受け渡しは利用できません。');}
  async function copyText(text){try{if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(text);return true;}}catch(e){}try{const field=document.createElement('textarea');field.value=text;field.style.position='fixed';field.style.opacity='0';document.body.appendChild(field);field.focus();field.select();const success=document.execCommand('copy');document.body.removeChild(field);return success;}catch(e){return false;}}
- async function copyPrompt(){if(!catalogReady)return false;const txt=makePrompt(),status=$('copy-status'),manual=$('manual-panel');status.classList.remove('error');const ok=await copyText(txt);if(ok){status.textContent=t('Copied! Open your AI service and paste the context.','コピーしました。AIサービスを開いてプロンプトを貼り付けてください。');manual.classList.remove('show');}else{status.textContent=t('Automatic copying is unavailable here. Use the manual copy field or download the prompt.','自動コピーできませんでした。手動コピー欄を利用するかプロンプトを保存してください。');status.classList.add('error');manual.classList.add('show');$('manual-text').value=txt;}};
- function downloadPrompt(){if(!catalogReady)return;const blob=new Blob([makePrompt()],{type:'text/markdown;charset=utf-8'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=(currentLang==='ja'?'TPDB_research_prompt_ja.md':'TPDB_research_prompt_en.md');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);$('copy-status').textContent=t('Markdown prompt saved. You can upload it to your AI service.','Markdownプロンプトを保存しました。AIサービスにアップロードできます。');}
+ async function copyPrompt(){if(!catalogReady)return false;rememberHandoff();const txt=makePrompt(),status=$('copy-status'),manual=$('manual-panel');status.classList.remove('error');const ok=await copyText(txt);if(ok){status.textContent=t('Copied! Open your AI service and paste the context.','コピーしました。AIサービスを開いてプロンプトを貼り付けてください。');manual.classList.remove('show');}else{status.textContent=t('Automatic copying is unavailable here. Use the manual copy field or download the prompt.','自動コピーできませんでした。手動コピー欄を利用するかプロンプトを保存してください。');status.classList.add('error');manual.classList.add('show');$('manual-text').value=txt;}};
+ function downloadPrompt(){if(!catalogReady)return;rememberHandoff();const blob=new Blob([makePrompt()],{type:'text/markdown;charset=utf-8'});const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=(currentLang==='ja'?'TPDB_research_prompt_ja.md':'TPDB_research_prompt_en.md');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);$('copy-status').textContent=t('Markdown prompt saved. You can upload it to your AI service.','Markdownプロンプトを保存しました。AIサービスにアップロードできます。');}
  document.querySelectorAll('[data-example]').forEach(btn=>btn.addEventListener('click',()=>{$('question').value=(currentLang==='ja'?examplesJa:examples)[btn.dataset.example];document.querySelectorAll('[data-example]').forEach(b=>b.classList.toggle('active',b===btn));runSearch(false);$('question').focus();}));
  $('question').addEventListener('input',()=>{document.querySelectorAll('[data-example]').forEach(b=>b.classList.remove('active'));updatePrompt();});
  $('question').addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.metaKey||e.ctrlKey)){e.preventDefault();runSearch(true);}});
  $('explore-btn').addEventListener('click',()=>runSearch(true));$('copy-btn').addEventListener('click',copyPrompt);$('download-btn').addEventListener('click',downloadPrompt);
- document.querySelectorAll('[data-provider]').forEach(a=>a.addEventListener('click',e=>{if(!catalogReady){e.preventDefault();return;}copyPrompt();}));
+ document.querySelectorAll('[data-provider]').forEach(a=>a.addEventListener('click',e=>{if(!catalogReady){e.preventDefault();return;}lastFeedbackProvider=a.dataset.provider||'unknown';try{sessionStorage.setItem('tpdb-last-provider',lastFeedbackProvider);}catch(err){}copyPrompt();}));
  document.querySelector('.prompt-preview summary').addEventListener('click',()=>updatePrompt());
  document.querySelectorAll('input[name="research-mode"]').forEach(r=>r.addEventListener('change',updatePrompt));
+ 
+ // Only metadata is remembered when preparing a prompt; do not store question/AI answer.
+ function rememberHandoff(){
+   lastHandoffMeta={mode:researchMode(),catalog_version:DB.version||'',catalog_generated_at:DB.generated_at||'',catalog_language:DB.catalog_language||'',language:currentLang};
+ }
+ const feedbackBackdrop=$('feedback-backdrop');
+ let feedbackPreviousFocus=null,feedbackBusy=false;
+ function feedbackStatus(message,kind=''){$('feedback-status').textContent=message;$('feedback-status').dataset.kind=kind;}
+ function feedbackOpen(){
+   feedbackPreviousFocus=document.activeElement;
+   feedbackBackdrop.hidden=false;feedbackBackdrop.setAttribute('aria-hidden','false');
+   document.body.classList.add('feedback-opened');
+   $('feedback-form').reset();feedbackStatus('');
+   $('feedback-submit-text').textContent=FEEDBACK_ENDPOINT?t('Send feedback','送信する'):t('Copy feedback (demo)','報告内容をコピー（デモ）');
+   $('feedback-details').placeholder=t('One sentence is enough. You may paste a short excerpt.','一文でも構いません。問題のある回答の一部を貼り付けることもできます。');
+   feedbackBackdrop.querySelector('input[name="feedback-issue"]').focus();
+ }
+ function feedbackClose(){if(feedbackBusy)return;feedbackBackdrop.hidden=true;feedbackBackdrop.setAttribute('aria-hidden','true');document.body.classList.remove('feedback-opened');if(feedbackPreviousFocus)feedbackPreviousFocus.focus();}
+ function feedbackPayload(){
+   const selected=feedbackBackdrop.querySelector('input[name="feedback-issue"]:checked');
+   const state=lastHandoffMeta||{mode:researchMode(),catalog_version:DB.version||'',catalog_generated_at:DB.generated_at||'',catalog_language:DB.catalog_language||'',language:currentLang};
+   const question=$('feedback-include-question').checked?$('question').value.trim().slice(0,1800):'';
+   return {schema:'tpdb-feedback-v1',receipt:'',issue:selected?.value||'',details:$('feedback-details').value.trim().slice(0,1500),question,
+     include_question:!!$('feedback-include-question').checked,provider:lastFeedbackProvider,mode:state.mode,
+     language:state.language,catalog_language:state.catalog_language,catalog_version:state.catalog_version,
+     catalog_generated_at:state.catalog_generated_at,prompt_version:TPDB_PROMPT_TEMPLATE_VERSION,
+     website_version:TPDB_WEBSITE_VERSION,website_path:location.pathname,honeypot:$('feedback-honeypot').value};
+ }
+ function feedbackReceiptId(){
+   const bytes=new Uint8Array(12);if(window.crypto?.getRandomValues)window.crypto.getRandomValues(bytes);
+   else for(let i=0;i<bytes.length;i++)bytes[i]=Math.floor(Math.random()*256);
+   return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');
+ }
+ // Confirmation contains ONLY a random receipt ID and a boolean; no feedback text travels via GET.
+ function verifyFeedbackReceipt(receipt){
+   return new Promise(resolve=>{
+     let finished=false;
+     const script=document.createElement('script');
+     const clean=()=>{clearTimeout(timeout);script.remove();delete window.TPDB_feedbackReceipt;};
+     const finish=value=>{if(finished)return;finished=true;clean();resolve(value);};
+     const timeout=setTimeout(()=>finish(false),6000);
+     window.TPDB_feedbackReceipt=data=>{if(data && data.receipt===receipt)finish(!!data.received);};
+     script.onerror=()=>finish(false);
+     script.src=FEEDBACK_ENDPOINT+(FEEDBACK_ENDPOINT.includes('?')?'&':'?')+'receipt='+encodeURIComponent(receipt)+'&v='+Date.now();
+     document.head.appendChild(script);
+   });
+ }
+ async function feedbackSend(event){
+   event.preventDefault();
+   if(feedbackBusy)return;
+   const payload=feedbackPayload();
+   if(!payload.issue){feedbackStatus(t('Please select one issue.','問題を1つ選択してください。'),'error');return;}
+   if(payload.honeypot){feedbackStatus(t('Unable to submit feedback.','フィードバックを送信できません。'),'error');return;}
+   if(!FEEDBACK_ENDPOINT){
+     const text=JSON.stringify({...payload,receipt:'(demo only)'},null,2);
+     const copied=await copyText(text);
+     feedbackStatus(copied?t('Feedback copied. It has NOT been sent; the administrator must configure the collector URL.','報告内容をコピーしました。送信はされていません。管理者による送信先URLの設定が必要です。'):t('Feedback is not configured. Please contact the TPDB administrator.','送信先が設定されていません。TPDB管理者にお問い合わせください。'),copied?'ok':'error');
+     return;
+   }
+   payload.receipt=feedbackReceiptId();
+   feedbackBusy=true;$('feedback-submit').disabled=true;
+   feedbackStatus(t('Sending feedback…','フィードバックを送信しています…'));
+   try{
+     // text/plain is a simple POST (no CORS preflight). Response is opaque, so a receipt check is required.
+     await fetch(FEEDBACK_ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload),redirect:'follow'});
+     const received=await verifyFeedbackReceipt(payload.receipt);
+     if(received){
+       feedbackStatus(t('Thank you. Your feedback was saved.','ありがとうございます。フィードバックを保存しました。'),'ok');
+       $('feedback-form').reset();
+     }else{
+       feedbackStatus(t('The request was sent, but saving could not be confirmed. Please avoid submitting confidential information and contact TPDB if this keeps happening.','送信要求は行いましたが、保存を確認できませんでした。改善しない場合はTPDBにお問い合わせください。'),'error');
+     }
+   }catch(error){feedbackStatus(t('Could not send feedback. Check your connection and try again.','送信できませんでした。通信状況を確認して再試行してください。'),'error');}
+   finally{feedbackBusy=false;$('feedback-submit').disabled=false;}
+ }
+ $('feedback-open').addEventListener('click',feedbackOpen);
+ $('feedback-close').addEventListener('click',feedbackClose);
+ $('feedback-cancel').addEventListener('click',feedbackClose);
+ $('feedback-form').addEventListener('submit',feedbackSend);
+ feedbackBackdrop.addEventListener('click',e=>{if(e.target===feedbackBackdrop)feedbackClose();});
+ document.addEventListener('keydown',e=>{
+   if(feedbackBackdrop.hidden)return;
+   if(e.key==='Escape'){e.preventDefault();feedbackClose();}
+   if(e.key==='Tab'){
+     const focusables=Array.from(feedbackBackdrop.querySelectorAll('button:not([disabled]),input:not([disabled]):not([tabindex="-1"]),textarea:not([disabled])'));
+     const first=focusables[0],last=focusables[focusables.length-1];
+     if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();}
+     else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
+   }
+ });
+
  function setHandoffEnabled(enabled){$('copy-btn').disabled=!enabled;$('download-btn').disabled=!enabled;document.querySelectorAll('[data-provider]').forEach(a=>a.setAttribute('aria-disabled',String(!enabled)));}
  function isoDateString(iso){const date=new Date(iso);return Number.isNaN(date.getTime())?t('date unavailable','日時不明'):date.toLocaleString(currentLang==='ja'?'ja-JP':'en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'Asia/Tokyo'})+' JST';}
  async function loadCatalog(){
@@ -450,6 +614,7 @@ ${DB.context}`;
  if(stored!=='en'&&stored!=='ja')stored=(new URLSearchParams(location.search).get('lang')==='ja'?'ja':'en');
  setLanguage(stored);
  $('refresh-catalog').addEventListener('click',loadCatalog);
+ window.TPDB_FEEDBACK_TEST={open:feedbackOpen,draft:feedbackPayload,endpointConfigured:()=>!!FEEDBACK_ENDPOINT};
  window.TPDB_DEMO={getSummary:()=>({language:currentLang,catalogLanguage:DB.catalog_language,loaded:catalogReady,human:DB.human.length,mouse:DB.mouse.length,contextChars:DB.context.length,selected:current.theme?.key||null,mode:researchMode(),generatedAt:DB.generated_at||null}),search:q=>{$('question').value=q;if(catalogReady)runSearch(false);return {human:current.humans.map(x=>x.id),mouse:current.mice.map(x=>x.id)};},getPrompt:()=>makePrompt(),setLanguage:lang=>setLanguage(lang)};
 })();
 </script>
